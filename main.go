@@ -27,15 +27,16 @@ var (
 )
 
 func handleHook(res http.ResponseWriter, req *http.Request) {
-	data, err := json.Marshal(commands["betrayal"])
+	client := &http.Client{}
+	the_string := `{"text": "Unga Bunga Bunga B"}`
+	print(hookURL)
+	req, err := http.NewRequest("POST", hookURL, bytes.NewBuffer([]byte(the_string)))
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
-	r, err := http.Post(hookURL, "application/json", bytes.NewBuffer([]byte(data)))
-	if err != nil {
-		log.Fatal(err)
-	}
-	print(r.StatusCode)
+	print(resp.Status, resp.StatusCode)
 }
 
 func handleQuery(res http.ResponseWriter, req *http.Request) {
