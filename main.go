@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 type slackResp struct {
@@ -21,7 +23,20 @@ var (
 		"meow":     slackResp{"<https://www.youtube.com/watch?v=xRhATB9NelU>"},
 	}
 	notFound = slackResp{"That command was bad and you should feel bad."}
+	hookURL  = os.Getenv("SLACK_WEBHOOK_URL")
 )
+
+func handleHook(res http.ResponseWriter, req *http.Request) {
+	data, err := json.Marshal(commands["betrayal"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	r, err := http.Post(hookURL, "application/json", bytes.NewBuffer([]byte(data)))
+	if err != nil {
+		log.Fatal(err)
+	}
+	print(r.StatusCode)
+}
 
 func handleQuery(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
@@ -44,6 +59,7 @@ func handleQuery(res http.ResponseWriter, req *http.Request) {
 
 func main() {
 	fmt.Println("Server running listening on port", port)
+	http.HandleFunc("/hook", handleHook)
 	http.HandleFunc("/command", handleQuery)
 	http.ListenAndServe(port, nil)
 }
