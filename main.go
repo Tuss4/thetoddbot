@@ -28,7 +28,7 @@ var (
 
 func handleHook(res http.ResponseWriter, req *http.Request) {
 	client := &http.Client{}
-	the_string := `{"text": "Unga Bunga Bunga B"}`
+	the_string := `{"text": "<https://www.youtube.com/watch?v=uehf8e43Vtk>"}`
 	print(hookURL)
 	req, err := http.NewRequest("POST", hookURL, bytes.NewBuffer([]byte(the_string)))
 	req.Header.Add("Content-Type", "application/json")
