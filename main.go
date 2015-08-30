@@ -1,13 +1,18 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
+
+type slackMsg struct {
+	Text  string
+	Token string
+}
 
 var (
 	port     = ":8000"
@@ -17,36 +22,44 @@ var (
 		"miracle":  `{"text": "<https://www.youtube.com/watch?v=uehf8e43Vtk>"}`,
 		"meow":     `{"text": "<https://www.youtube.com/watch?v=xRhATB9NelU>"}`,
 	}
-	notFound = `{"text": "That command was bad and you should feel bad."}`
-	hookURL  = os.Getenv("SLACK_WEBHOOK_URL")
+	notFound     = `{"text": "That command was bad and you should feel bad. #ZoidbergLevelRoast"}`
+	hookURL      = os.Getenv("SLACK_WEBHOOK_URL")
+	slackToken   = os.Getenv("SLACK_TOKEN")
+	trigger      = "thetodd: "
+	invalidToken = `{"status": "Invalid Token"}`
+	notAllowed   = `{"status": "Method Not Allowed"}`
 )
 
-func handleHook(res http.ResponseWriter, req *http.Request, val string) {
-	client := &http.Client{}
-	req, err := http.NewRequest("POST", hookURL, bytes.NewBuffer([]byte(val)))
-	req.Header.Add("Content-Type", "application/json")
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Status:", resp.Status)
+func hello(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Contet-Type", "application/json")
+	io.WriteString(res, `{"status": "Sup, fam?"}`)
 }
 
-func handleQuery(res http.ResponseWriter, req *http.Request) {
-	res.Header().Set("Content-Type", "application/json")
-	qMap := req.URL.Query()
-	qVal := qMap["q"][0]
-	if commands[qVal] != "" {
-		handleHook(res, req, commands[qVal])
-		io.WriteString(res, `{"status": "Valid Command"}`)
+func handlePost(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		err := r.ParseForm()
+		if err != nil {
+			log.Fatal(err)
+		}
+		command := strings.TrimPrefix(r.Form.Get("text"), trigger)
+		msg := slackMsg{command, r.Form.Get("token")}
+		if msg.Token == slackToken {
+			if commands[msg.Text] != "" {
+				io.WriteString(w, commands[msg.Text])
+			} else {
+				io.WriteString(w, notFound)
+			}
+		} else {
+			io.WriteString(w, invalidToken)
+		}
 	} else {
-		handleHook(res, req, notFound)
-		io.WriteString(res, `{"status": "Invalid Command"}`)
+		io.WriteString(w, notAllowed)
 	}
 }
 
 func main() {
 	fmt.Println("Server running listening on port", port)
-	http.HandleFunc("/command", handleQuery)
+	http.HandleFunc("/command", handlePost)
+	http.HandleFunc("/hello", hello)
 	http.ListenAndServe(port, nil)
 }
