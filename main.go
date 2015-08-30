@@ -23,7 +23,6 @@ var (
 		"meow":     `{"text": "<https://www.youtube.com/watch?v=xRhATB9NelU>"}`,
 	}
 	notFound     = `{"text": "That command was bad and you should feel bad. #ZoidbergLevelRoast"}`
-	hookURL      = os.Getenv("SLACK_WEBHOOK_URL")
 	slackToken   = os.Getenv("SLACK_TOKEN")
 	trigger      = "thetodd: "
 	invalidToken = `{"status": "Invalid Token"}`
