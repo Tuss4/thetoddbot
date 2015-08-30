@@ -29,9 +29,17 @@ var (
 	notAllowed   = `{"status": "Method Not Allowed"}`
 )
 
-func hello(res http.ResponseWriter, req *http.Request) {
-	res.Header().Set("Contet-Type", "application/json")
-	io.WriteString(res, `{"status": "Sup, fam?"}`)
+func getToken() string {
+	if slackToken != "" {
+		return slackToken
+	} else {
+		return ""
+	}
+}
+
+func hello(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Contet-Type", "application/json")
+	io.WriteString(w, `{"status": "Sup, fam?"}`)
 }
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
@@ -40,9 +48,10 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		t := getToken()
 		command := strings.TrimPrefix(r.Form.Get("text"), trigger)
 		msg := slackMsg{command, r.Form.Get("token")}
-		if msg.Token == slackToken {
+		if msg.Token == t {
 			if commands[msg.Text] != "" {
 				io.WriteString(w, commands[msg.Text])
 			} else {
