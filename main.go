@@ -21,6 +21,7 @@ var (
 		"betrayal": `{"text": "<https://www.youtube.com/watch?v=uw5P2up5bL4>"}`,
 		"miracle":  `{"text": "<https://www.youtube.com/watch?v=uehf8e43Vtk>"}`,
 		"meow":     `{"text": "<https://www.youtube.com/watch?v=xRhATB9NelU>"}`,
+		"oneq":     `{"text": "*Points at your shoe game*\nWHAT ARE THOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSE?!"}`,
 	}
 	notFound     = `{"text": "That command was bad and you should feel bad. #ZoidbergLevelRoast"}`
 	slackToken   = os.Getenv("SLACK_TOKEN")
