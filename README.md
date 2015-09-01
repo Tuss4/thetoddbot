@@ -1,7 +1,7 @@
 # The Todd Bot
 A Slack Outgoing Webhook integration in Go, that listens and serves scrubs clips of the todd based on the query. This can be easily reconfigured into any type of bot you want.
 
-Status: [![Build Status](https://drone.io/github.com/Tuss4/thetoddbot/status.png)](https://drone.io/github.com/Tuss4/thetoddbot/latest)
+[![Build Status](https://drone.io/github.com/Tuss4/thetoddbot/status.png)](https://drone.io/github.com/Tuss4/thetoddbot/latest)
 
 # Install
 + `go get github.com/tuss4/thetoddbot`
