@@ -60,6 +60,25 @@ func TestMethodNotAllowed(t *testing.T) {
 	}
 }
 
+func TestBadToken(t *testing.T) {
+	data := url.Values{}
+	data.Set("token", "lergh")
+	data.Add("text", "oneq")
+	req, err := http.NewRequest("POST", "/command", bytes.NewBufferString(data.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+	if err != nil {
+		t.Fatal("Creating 'POST /command' request failed!")
+	}
+	commandHandler().ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Command page didn't return %v", http.StatusOK)
+	}
+	if w.Body.String() != invalidToken {
+		t.Errorf("Response body didn't return %v", invalidToken)
+	}
+}
+
 func TestCommandFound(t *testing.T) {
 	// Test "oneq"
 	data := url.Values{}

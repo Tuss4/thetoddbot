@@ -32,11 +32,7 @@ var (
 )
 
 func getToken() string {
-	if slackToken != "" {
-		return slackToken
-	} else {
-		return ""
-	}
+	return slackToken
 }
 
 func helloHandler() http.HandlerFunc {
