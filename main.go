@@ -21,9 +21,9 @@ var (
 		"betrayal": `{"text": "<https://www.youtube.com/watch?v=uw5P2up5bL4>"}`,
 		"miracle":  `{"text": "<https://www.youtube.com/watch?v=uehf8e43Vtk>"}`,
 		"meow":     `{"text": "<https://www.youtube.com/watch?v=xRhATB9NelU>"}`,
-		"oneq":     `{"text": "*Points at your shoe game*\nWHAT ARE THOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSE?!"}`,
+		"oneq":     `{"text": "*Points at your shoe game*\nWHAT ARE THOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSE?!\n<http://i.imgur.com/EnxQLii.gif>"}`,
 	}
-	notFound     = `{"text": "That command was bad and you should feel bad. #ZoidbergLevelRoast"}`
+	notFound     = `{"text": "That command was bad and you should feel bad. #ZoidbergLevelRoast\n<http://i.imgur.com/UnXhfOJ.gif>"}`
 	slackToken   = os.Getenv("SLACK_TOKEN")
 	trigger      = "thetodd: "
 	invalidToken = `{"status": "Invalid Token"}`
