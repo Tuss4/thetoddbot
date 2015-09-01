@@ -8,6 +8,8 @@ import (
 	"testing"
 )
 
+// Shout out to http://www.markjberger.com/testing-web-apps-in-golang/
+
 func TestHello(t *testing.T) {
 
 	req, err := http.NewRequest("GET", "/hello", nil)
