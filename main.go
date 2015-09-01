@@ -28,6 +28,7 @@ var (
 	trigger      = "thetodd: "
 	invalidToken = `{"status": "Invalid Token"}`
 	notAllowed   = `{"status": "Method Not Allowed"}`
+	helloMsg     = `{"status": "Sup, fam?"}`
 )
 
 func getToken() string {
@@ -38,37 +39,41 @@ func getToken() string {
 	}
 }
 
-func hello(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Contet-Type", "application/json")
-	io.WriteString(w, `{"status": "Sup, fam?"}`)
+func helloHandler() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, helloMsg)
+	})
 }
 
-func handlePost(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		err := r.ParseForm()
-		if err != nil {
-			log.Fatal(err)
-		}
-		t := getToken()
-		command := strings.TrimPrefix(r.Form.Get("text"), trigger)
-		msg := slackMsg{command, r.Form.Get("token")}
-		if msg.Token == t {
-			if commands[msg.Text] != "" {
-				io.WriteString(w, commands[msg.Text])
+func commandHandler() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" {
+			err := r.ParseForm()
+			if err != nil {
+				log.Fatal(err)
+			}
+			t := getToken()
+			command := strings.TrimPrefix(r.Form.Get("text"), trigger)
+			msg := slackMsg{command, r.Form.Get("token")}
+			if msg.Token == t {
+				if commands[msg.Text] != "" {
+					io.WriteString(w, commands[msg.Text])
+				} else {
+					io.WriteString(w, notFound)
+				}
 			} else {
-				io.WriteString(w, notFound)
+				io.WriteString(w, invalidToken)
 			}
 		} else {
-			io.WriteString(w, invalidToken)
+			io.WriteString(w, notAllowed)
 		}
-	} else {
-		io.WriteString(w, notAllowed)
-	}
+	})
 }
 
 func main() {
 	fmt.Println("Server running and listening on port", port)
-	http.HandleFunc("/command", handlePost)
-	http.HandleFunc("/hello", hello)
+	http.HandleFunc("/command", commandHandler())
+	http.HandleFunc("/hello", helloHandler())
 	http.ListenAndServe(port, nil)
 }
