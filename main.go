@@ -67,7 +67,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	fmt.Println("Server running listening on port", port)
+	fmt.Println("Server running and listening on port", port)
 	http.HandleFunc("/command", handlePost)
 	http.HandleFunc("/hello", hello)
 	http.ListenAndServe(port, nil)
